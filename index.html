@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblioteca de Código Python de Automação</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+  h1 {
+    font-size: 2rem;
+    color: #f0c14b;
+    margin-bottom: 8px;
+    border-bottom: 3px solid #f0c14b;
+    padding-bottom: 12px;
+  }
+  .subtitle { color: #888; margin-bottom: 40px; font-size: 0.95rem; }
+  h2 {
+    font-size: 1.4rem;
+    color: #7eb8da;
+    margin: 50px 0 20px 0;
+    padding-left: 12px;
+    border-left: 5px solid #7eb8da;
+  }
+  .card {
+    background: #16213e;
+    border: 1px solid #2a3a5c;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .card h3 {
+    color: #f0c14b;
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+  }
+  .tech-name {
+    font-family: 'Consolas', 'Courier New', monospace;
+    background: #0f3460;
+    color: #7eb8da;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  .explanation { color: #c0c0c0; margin-bottom: 14px; font-size: 0.95rem; }
+  pre {
+    background: #0a0a1a;
+    border: 1px solid #2a3a5c;
+    border-radius: 6px;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.82rem;
+    color: #a8d5a2;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  .copy-btn {
+    background: #f0c14b;
+    color: #1a1a2e;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-top: 8px;
+  }
+  .copy-btn:hover { background: #d4a017; }
+  .footer { color: #555; margin-top: 60px; font-size: 0.8rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Biblioteca de Código Python de Automação</h1>
+<p class="subtitle">Baseado nos padrões executados em 22/10/2026 via Desktop Commander. Cada padrão tem o nome técnico, uma explicação simples e o código pronto para copiar.</p>
+
+<h2>1. Operações com Arquivos</h2>
+
+<div class="card">
+<h3>Ler início de arquivo grande</h3>
+<span class="tech-name">open().read(N)</span>
+<p class="explanation">Abre um arquivo de texto e lê apenas os primeiros N caracteres. Útil para inspecionar arquivos enormes sem carregar tudo na memória.</p>
+<pre>python -c "print(open(r'CAMINHO', encoding='utf-8', errors='ignore').read(5000))"</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<div class="card">
+<h3>Ler final de arquivo grande</h3>
+<span class="tech-name">seek() + read()</span>
+<p class="explanation">Move o cursor para o fim do arquivo, volta N bytes e lê. Perfeito para ver logs recentes ou o final de exports grandes.</p>
+<pre>python -c "f=open(r'CAMINHO', encoding='utf-8', errors='ignore'); f.seek(0,2); size=f.tell(); f.seek(max(0,size-8000)); print(f.read())"</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<div class="card">
+<h3>Ler arquivo completo em linhas</h3>
+<span class="tech-name">open().read().splitlines()</span>
+<p class="explanation">Lê o arquivo inteiro e divide em lista de linhas. Bom para processar conteúdo linha por linha.</p>
+<pre>python -c "
+linhas = open(r'CAMINHO', encoding='utf-8', errors='ignore').read().splitlines()
+for i, l in enumerate(linhas[:50], 1):
+    print(f'{i}: {l}')"</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<h2>2. Busca e Varredura de Pastas</h2>
+
+<div class="card">
+<h3>Buscar arquivos por padrão (glob)</h3>
+<span class="tech-name">start_search / glob</span>
+<p class="explanation">Procura arquivos cujo nome contenha um padrão, em uma pasta ou recursivo. O asterisco (*) é curinga.</p>
+<pre>Get-ChildItem -Path 'PASTA' -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -like '*PADRAO*' } | Select-Object -ExpandProperty FullName</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<div class="card">
+<h3>Listar subpastas de uma pasta</h3>
+<span class="tech-name">Get-ChildItem -Directory</span>
+<p class="explanation">Mostra só as pastas dentro de um diretório, sem arquivos. Rápido para mapear estrutura.</p>
+<pre>Get-ChildItem -Path 'PASTA' -Directory -Force | Select-Object -ExpandProperty Name</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<div class="card">
+<h3>Verificar unidades e espaço em disco</h3>
+<span class="tech-name">Get-PSDrive</span>
+<p class="explanation">Lista todos os discos do sistema com espaço usado e livre. Ajuda a saber onde tem folga.</p>
+<pre>Get-PSDrive -PSProvider FileSystem | Select-Object Name, Root, Used, Free | Format-Table -AutoSize</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<h2>3. Contagem e Análise</h2>
+
+<div class="card">
+<h3>Contar arquivos por pasta (Python)</h3>
+<span class="tech-name">os.walk()</span>
+<p class="explanation">Percorre uma pasta recursivamente somando arquivos. Mostra a contagem de cada pasta e o total geral.</p>
+<pre>python -c "
+import os
+pastas=[r'PASTA1', r'PASTA2']
+t=0
+for p in pastas:
+    c=0
+    if os.path.exists(p):
+        for r,d,f in os.walk(p): c+=len(f)
+        t+=c; print(f'{c:>8} | {p}')
+    else: print(f'NAO EXISTE | {p}')
+print('TOTAL:', t)"</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<div class="card">
+<h3>Contar arquivos por pasta (PowerShell)</h3>
+<span class="tech-name">Measure-Object</span>
+<p class="explanation">Versão PowerShell do mesmo padrão. Usa Measure-Object para contar sem abrir cada arquivo.</p>
+<pre>$pastas=@('PASTA1','PASTA2'); $t=0; foreach($p in $pastas){ if(Test-Path $p){ $c=(Get-ChildItem -Path $p -Recurse -File -Force -ErrorAction SilentlyContinue | Measure-Object).Count; $t+=$c; Write-Output ('{0,8} | {1}' -f $c,$p) } else { Write-Output ('NAO EXISTE | {0}' -f $p) } }; Write-Output ('TOTAL: {0}' -f $t)</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<div class="card">
+<h3>Contar sem duplicar subpastas</h3>
+<span class="tech-name">dedup por prefixo</span>
+<p class="explanation">Quando uma pasta contém outra que também deu match, evita contar duas vezes. Ordena por tamanho do caminho e só aceita pastas que não são subpasta de outra aceita.</p>
+<pre>$dirs=Get-ChildItem -Path 'J:\' -Recurse -Directory -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -like '*PADRAO*' } | Sort-Object { $_.FullName.Length }; $accepted=@(); $t=0; $lines=@(); foreach($d in $dirs){ $skip=$false; foreach($a in $accepted){ if($d.FullName.StartsWith($a.FullName+'\')){ $skip=$true; break } }; if(-not $skip){ $accepted+=$d; $c=(Get-ChildItem -Path $d.FullName -Recurse -File -Force -ErrorAction SilentlyContinue | Measure-Object).Count; $t+=$c; $lines+='{0,8} | {1}' -f $c,$d.FullName } }; $lines+=''; $lines+='TOTAL: '+$t; $lines+='PASTAS RAIZ: '+$accepted.Count; $lines | Out-File -FilePath 'SAIDA.txt' -Encoding UTF8</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<h2>4. Processos e Saída</h2>
+
+<div class="card">
+<h3>Executar comando e capturar saída</h3>
+<span class="tech-name">start_process</span>
+<p class="explanation">Dispara um comando no terminal e recebe a saída de volta. Base de todo o resto: é o motor que executa os outros padrões.</p>
+<pre>start_process
+shell: powershell
+command: SEU_COMANDO_AQUI
+timeout_ms: 3000</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<div class="card">
+<h3>Ler saída de processo em execução</h3>
+<span class="tech-name">read_process_output</span>
+<p class="explanation">Quando um comando demora mais que o timeout, ele continua rodando em background. Este padrão lê a saída parcial usando o PID retornado.</p>
+<pre>read_process_output
+pid: NUMERO_DO_PID
+length: 50
+offset: 0
+timeout_ms: 3000</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<div class="card">
+<h3>Ler arquivo gerado por outro comando</h3>
+<span class="tech-name">read_multiple_files</span>
+<p class="explanation">Lê um ou vários arquivos de uma vez e devolve o conteúdo. Usado para pegar relatórios que um script salvou em disco.</p>
+<pre>read_multiple_files
+paths: ["CAMINHO_DO_ARQUIVO"]</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<div class="card">
+<h3>Verificar sessões ativas</h3>
+<span class="tech-name">list_sessions</span>
+<p class="explanation">Mostra se há algum processo ainda rodando em background. Evita disparar coisas em cima de execuções pendentes.</p>
+<pre>list_sessions</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<h2>5. Varredura Web</h2>
+
+<div class="card">
+<h3>Baixar página web</h3>
+<span class="tech-name">requests.get()</span>
+<p class="explanation">Faz uma requisição HTTP e baixa o HTML de qualquer URL. É o primeiro passo de qualquer automação na internet.</p>
+<pre>python -c "
+import requests
+r = requests.get('https://URL_AQUI', timeout=15)
+print(r.status_code)
+print(r.text[:3000])"</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<div class="card">
+<h3>Extrair dados de HTML</h3>
+<span class="tech-name">BeautifulSoup</span>
+<p class="explanation">Lê o HTML baixado e extrai títulos, links, preços, o que você quiser, usando seletores CSS ou nomes de tags.</p>
+<pre>python -c "
+import requests
+from bs4 import BeautifulSoup
+r = requests.get('https://URL_AQUI', timeout=15)
+soup = BeautifulSoup(r.text, 'html.parser')
+for a in soup.find_all('a', limit=10):
+    print(a.get_text(strip=True), '->', a.get('href'))"</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<div class="card">
+<h3>Controlar navegador real</h3>
+<span class="tech-name">Selenium</span>
+<p class="explanation">Abre um Chrome ou Edge de verdade, clica, digita, rola página. Para sites que exigem JavaScript ou login. Mais pesado que requests.</p>
+<pre>python -c "
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+driver = webdriver.Chrome()
+driver.get('https://URL_AQUI')
+print(driver.title)
+campos = driver.find_elements(By.TAG_NAME, 'input')
+print(len(campos), 'campos encontrados')
+driver.quit()"</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<div class="card">
+<h3>Busca no Google e salvar resultados</h3>
+<span class="tech-name">requests + BeautifulSoup (Google)</span>
+<p class="explanation">Combina download e extração para varrer resultados de busca, capturar títulos e URLs, e gravar num arquivo TXT.</p>
+<pre>python -c "
+import requests
+from bs4 import BeautifulSoup
+
+headers = {'User-Agent': 'Mozilla/5.0'}
+r = requests.get('https://www.google.com/search?q=TERMO+DE+BUSCA', headers=headers, timeout=15)
+soup = BeautifulSoup(r.text, 'html.parser')
+resultados = []
+for a in soup.find_all('a', href=True):
+    href = a['href']
+    if href.startswith('/url?q='):
+        url = href.split('/url?q=')[1].split('&')[0]
+        if url.startswith('http'):
+            resultados.append(a.get_text(strip=True) + ' | ' + url)
+for res in resultados[:15]:
+    print(res)
+open('resultados_busca.txt', 'w', encoding='utf-8').write('\n'.join(resultados))"</pre>
+<button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+</div>
+
+<div class="footer">
+Gerado em 22/10/2026 a partir dos padrões de automação executados via Desktop Commander.<br>
+Substitua CAMINHO, PASTA, PADRAO, URL_AQUI e TERMO_DE_BUSCA pelos valores reais antes de rodar.
+</div>
+</div>
+<script>
+function copyCode(btn) {
+  const pre = btn.previousElementSibling;
+  navigator.clipboard.writeText(pre.textContent).then(() => {
+    const old = btn.textContent;
+    btn.textContent = 'Copiado!';
+    setTimeout(() => btn.textContent = old, 1500);
+  });
+}
+</script>
+</body>
+</html>
